@@ -80,6 +80,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BuildRunner.cs" />
+    <Compile Include="Builtins\AspNetCompiler.cs" />
     <Compile Include="Builtins\AssemblyInfoGenerator.cs" />
     <Compile Include="Builtins\ExecutableTool.cs" />
     <Compile Include="Builtins\FileList.cs" />

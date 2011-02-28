@@ -69,9 +69,11 @@ namespace Phantom.Core.Builtins {
 			string args = "\"" + file + "\" /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
 
 			foreach (DictionaryEntry entry in properties) {
-                args += " /p:" + entry.Key + "=\"" + entry.Value + "\"";
+                args += string.Format(" /p:{0}={2}{1}{2}", entry.Key, entry.Value, entry.Value is string ? "\"" : string.Empty);
 			}
 
+		    Console.WriteLine(args);
+            
 			Execute(args);
 		}
 	}
