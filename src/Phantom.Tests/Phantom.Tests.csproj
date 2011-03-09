@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfoTester.cs" />
     <Compile Include="AutoRunnableTester.cs" />
+    <Compile Include="creamdog\MSDepoyTester.cs" />
     <Compile Include="CSharpSimpleTest.cs" />
     <Compile Include="DescriptionTester.cs" />
     <Compile Include="DslTester.cs" />

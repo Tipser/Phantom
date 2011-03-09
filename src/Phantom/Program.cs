@@ -54,6 +54,7 @@ namespace Phantom {
 				}
 
 				PrintSelectedTargets(options);
+			    
 				runner.Execute(options);
 			}
 			catch (Exception exception) {

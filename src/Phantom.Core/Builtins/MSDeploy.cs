@@ -14,11 +14,13 @@ namespace Phantom.Core.Builtins
         {
             toolPath = GetMSDeployExePath();
             skipfiles = new string[0];
+            dest = new Dictionary<string, object>();
+            source = new Dictionary<string, object>();
         }
 
         public string verb { get; set; }
-        public string dest { get; set; }
-        public string source { get; set; }
+        public IDictionary dest { get; set; }
+        public IDictionary source { get; set; }
         public string flags { get; set; }
         public string[] skipfiles { get; set; }
 
@@ -26,24 +28,38 @@ namespace Phantom.Core.Builtins
         {
             toolPath = toolPath ?? GetMSDeployExePath();
 
+            var args = GetArgs();
+
+            Execute(args);
+        }
+
+        public string GetArgs() {
+
             if (string.IsNullOrEmpty(toolPath))
                 throw new InvalidOperationException("please specify the full path to msdeploy.exe");
-            
+
             if (string.IsNullOrEmpty(verb))
                 throw new InvalidOperationException("please specify verb");
-            
-            if (string.IsNullOrEmpty(source))
+
+            if (source.Keys.Count == 0)
                 throw new InvalidOperationException("please specify source");
-            
-            if (string.IsNullOrEmpty(dest))
+
+            if (dest.Keys.Count == 0)
                 throw new InvalidOperationException("please specify dest");
 
-            var args = string.Format("-verb:{0} {3} -source:{1}, -dest:{2}", verb, source, dest, SkipFiles);
+            var sourceStr = string.Join(",", source.Keys.Cast<string>().Select(key => ToParameter(key, source[key])));
+            var destStr = string.Join(",", dest.Keys.Cast<string>().Select(key => ToParameter(key, dest[key])));
+
+            var args = string.Format("-verb:{0} {3} -source:{1}, -dest:{2}", verb, sourceStr, destStr, SkipFiles);
 
             if (flags != null)
                 args = string.Format("{0} {1}", args, string.Join(",", flags));
 
-            Execute(args);
+            return args;
+        }
+
+        private static string ToParameter(string key, object value) {
+            return string.Format("{0}={2}{1}{2}", key, value, value is string ? "\"" : string.Empty);
         }
 
         private string SkipFiles 

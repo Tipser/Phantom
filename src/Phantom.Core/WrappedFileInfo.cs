@@ -15,9 +15,11 @@
 #endregion
 
 namespace Phantom.Core {
-	using System.IO;
+    using System;
+    using System.IO;
+	using System.Security.AccessControl;
 
-	public abstract class WrappedFileSystemInfo : FileSystemInfo {
+    public abstract class WrappedFileSystemInfo : FileSystemInfo {
 		readonly FileSystemInfo inner;
 
 		protected WrappedFileSystemInfo(string baseDir, string originalPath, FileSystemInfo inner, bool flatten) {
@@ -56,6 +58,8 @@ namespace Phantom.Core {
 		public override string ToString() {
 			return FullName;
 		}
+
+        public abstract void ClearReadOnly();
 	}
 
 	public class WrappedFileInfo : WrappedFileSystemInfo {
@@ -77,9 +81,20 @@ namespace Phantom.Core {
 				if (!Directory.Exists(newPath)) {
 					Directory.CreateDirectory(newPath);
 				}
+
 				File.Copy(FullName, combinedPath, true);
 			}
 		}
+
+        public override void ClearReadOnly() {
+            var fileAttr = File.GetAttributes(FullName);
+            
+            if ((fileAttr & FileAttributes.ReadOnly) != FileAttributes.ReadOnly) 
+                return;
+            
+            fileAttr = (FileAttributes)(Convert.ToInt32(fileAttr) - Convert.ToInt32(FileAttributes.ReadOnly));
+            File.SetAttributes(FullName, fileAttr);
+        }
 	}
 
 	public class WrappedDirectoryInfo : WrappedFileSystemInfo {
@@ -93,5 +108,15 @@ namespace Phantom.Core {
 				Directory.CreateDirectory(combinedPath);
 			}
 		}
+
+        public override void ClearReadOnly()
+        {
+            var info = new DirectoryInfo(FullName);
+
+            if (!info.Exists || (info.Attributes & FileAttributes.ReadOnly) != FileAttributes.ReadOnly)
+                return;
+
+            info.Attributes = (FileAttributes)(Convert.ToInt32(info.Attributes) - Convert.ToInt32(FileAttributes.ReadOnly));
+        }
 	}
 }

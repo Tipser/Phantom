@@ -40,8 +40,11 @@ namespace Phantom.Core {
 		}
 
 		public ScriptModel GenerateBuildScript(string path) {
+
 			var factory = dslFactories.FirstOrDefault(x => x.CanExecute(path));
-			if (factory == null) throw new ScriptLoadException(path);
+
+			if (factory == null) 
+                throw new ScriptLoadException(path);
 
 			var model = factory.BuildModel(path);
 			return model;
