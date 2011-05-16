@@ -23,7 +23,7 @@ namespace Phantom.Core.Builtins
         public IDictionary source { get; set; }
         public string flags { get; set; }
         public string[] skipfiles { get; set; }
-
+        
         protected override void Execute()
         {
             toolPath = toolPath ?? GetMSDeployExePath();
@@ -41,16 +41,13 @@ namespace Phantom.Core.Builtins
             if (string.IsNullOrEmpty(verb))
                 throw new InvalidOperationException("please specify verb");
 
-            if (source.Keys.Count == 0)
-                throw new InvalidOperationException("please specify source");
-
-            if (dest.Keys.Count == 0)
-                throw new InvalidOperationException("please specify dest");
-
             var sourceStr = string.Join(",", source.Keys.Cast<string>().Select(key => ToParameter(key, source[key])));
             var destStr = string.Join(",", dest.Keys.Cast<string>().Select(key => ToParameter(key, dest[key])));
 
-            var args = string.Format("-verb:{0} {3} -source:{1}, -dest:{2}", verb, sourceStr, destStr, SkipFiles);
+            sourceStr = string.IsNullOrEmpty(sourceStr) ? string.Empty : string.Format("-source:{0}", sourceStr);
+            destStr = string.IsNullOrEmpty(destStr) ? string.Empty : string.Format(", -dest:{0}", destStr);
+
+            var args = string.Format("-verb:{0} {3}{1}{2}", verb, sourceStr, destStr, SkipFiles);
 
             if (flags != null)
                 args = string.Format("{0} {1}", args, string.Join(",", flags));
