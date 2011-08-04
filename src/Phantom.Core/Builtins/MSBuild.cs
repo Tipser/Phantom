@@ -51,6 +51,7 @@ namespace Phantom.Core.Builtins {
 		public IDictionary properties { get; set; }
 		public string file { get; set; }
         public string msbuildversion { get; set; }
+        public string toolsversion { get; set; }
 
 		string _version;
 
@@ -70,7 +71,10 @@ namespace Phantom.Core.Builtins {
             if (!string.IsNullOrEmpty(msbuildversion))
                 toolPath = BuildMsbuildPath(msbuildversion);
 
-            string args = "\"" + file + "\" /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
+            if (!string.IsNullOrEmpty(toolsversion))
+                toolsversion = string.Format("/toolsversion:{0}", toolsversion);
+
+            string args = "\"" + file + "\"" + toolsversion + " /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
 
 			foreach (DictionaryEntry entry in properties) {
                 args += string.Format(" /p:{0}={2}{1}{2}", entry.Key, entry.Value, entry.Value is string ? "\"" : string.Empty);

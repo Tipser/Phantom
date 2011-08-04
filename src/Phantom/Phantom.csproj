@@ -123,8 +123,7 @@
     <Copy SourceFiles="@(DslFiles)" DestinationFolder="$(OutDir)" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>mkdir merged
-
-ILMerge.exe /v4 /wildcards /target:exe /out:merged\phantom.exe *.exe *.dll</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
