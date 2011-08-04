@@ -44,13 +44,13 @@ namespace Phantom.Core.Builtins
             var sourceStr = string.Join(",", source.Keys.Cast<string>().Select(key => ToParameter(key, source[key])));
             var destStr = string.Join(",", dest.Keys.Cast<string>().Select(key => ToParameter(key, dest[key])));
 
-            sourceStr = string.IsNullOrEmpty(sourceStr) ? string.Empty : string.Format("-source:{0}", sourceStr);
-            destStr = string.IsNullOrEmpty(destStr) ? string.Empty : string.Format(", -dest:{0}", destStr);
+            sourceStr = string.IsNullOrEmpty(sourceStr) ? string.Empty : string.Format(" -source:{0}", sourceStr);
+            destStr = string.IsNullOrEmpty(destStr) ? string.Empty : string.Format(" -dest:{0}", destStr);
 
             var args = string.Format("-verb:{0} {3}{1}{2}", verb, sourceStr, destStr, SkipFiles);
 
             if (flags != null)
-                args = string.Format("{0} {1}", args, string.Join(",", flags));
+                args = string.Format("{0} {1}", args, string.Join(" ", flags));
 
             return args;
         }

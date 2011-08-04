@@ -50,7 +50,8 @@ namespace Phantom.Core.Builtins {
 		public string verbosity { get; set; }
 		public IDictionary properties { get; set; }
 		public string file { get; set; }
-		
+        public string msbuildversion { get; set; }
+
 		string _version;
 
 		public string version {
@@ -66,7 +67,10 @@ namespace Phantom.Core.Builtins {
 				throw new InvalidOperationException("Please specify the 'file' property for calls to msbuild.");
 			}
 
-			string args = "\"" + file + "\" /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
+            if (!string.IsNullOrEmpty(msbuildversion))
+                toolPath = BuildMsbuildPath(msbuildversion);
+
+            string args = "\"" + file + "\" /p:Configuration=" + configuration + " /t:" + string.Join(";", targets) + " /v:" + verbosity;
 
 			foreach (DictionaryEntry entry in properties) {
                 args += string.Format(" /p:{0}={2}{1}{2}", entry.Key, entry.Value, entry.Value is string ? "\"" : string.Empty);

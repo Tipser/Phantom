@@ -113,11 +113,18 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-	<Target Name="AfterBuild">
-		<ItemGroup>
-			<DslFiles Include="..\Phantom.DSL.Boo\$(OutDir)*.*"></DslFiles>
-			<DslFiles Include="..\Phantom.DSL.CSharp\$(OutDir)*.*"></DslFiles>
-		</ItemGroup>
-		<Copy SourceFiles="@(DslFiles)" DestinationFolder="$(OutDir)" />
-	</Target>
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <DslFiles Include="..\Phantom.DSL.Boo\$(OutDir)*.*">
+      </DslFiles>
+      <DslFiles Include="..\Phantom.DSL.CSharp\$(OutDir)*.*">
+      </DslFiles>
+    </ItemGroup>
+    <Copy SourceFiles="@(DslFiles)" DestinationFolder="$(OutDir)" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>mkdir merged
+
+ILMerge.exe /v4 /wildcards /target:exe /out:merged\phantom.exe *.exe *.dll</PostBuildEvent>
+  </PropertyGroup>
 </Project>
